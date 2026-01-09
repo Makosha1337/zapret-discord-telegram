@@ -1,6 +1,6 @@
 <div align="center">
 
-# <img src="https://cdn-icons-png.flaticon.com/128/5968/5968756.png" height=28 /> <a href="https://github.com/Makosha1337/">Makosha1337</a><a href="https://github.com/Makosha1337/zapret-discord-telegram">/zapret-discord-telegram-youtube-whatsapp</a> <img src="https://cdn-icons-png.flaticon.com/128/1384/1384060.png" height=28 />
+# <img src="https://cdn-icons-png.flaticon.com/128/5968/5968756.png" height=28 /> <a href="https://github.com/Makosha1337/">Makosha1337</a><a href="https://github.com/Makosha1337/zapret-discord-telegram">/zapret-discord-telegram</a> <img src="https://cdn-icons-png.flaticon.com/128/1384/1384060.png" height=28 />
 </div>
 
 > [!CAUTION]
@@ -166,5 +166,6 @@ sc delete название_из_первого_шага
 ## 🩷Благодарность участникам проекта
 
 [![Contributors](https://contrib.rocks/image?repo=Flowseal/zapret-discord-youtube)](https://github.com/Flowseal/zapret-discord-youtube/graphs/contributors)
+
 
 💖 Отдельная благодарность разработчику [zapret](https://github.com/bol-van/zapret) - [bol-van](https://github.com/bol-van)
