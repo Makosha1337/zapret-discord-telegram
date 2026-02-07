@@ -1,5 +1,5 @@
 @echo off
-set "LOCAL_VERSION=1.9.3"
+set "LOCAL_VERSION=1.9.5"
 cd /d "%~dp0"
 set "WINWSB=%~dp0bin\winwsb.exe"
 if not exist "%WINWSB%" (
@@ -53,7 +53,7 @@ if "%1"=="admin" (
     call :check_command powershell
 
     echo Requesting admin rights...
-    powershell -Command "Start-Process 'cmd.exe' -ArgumentList '/c \"\"%~f0\" admin\"' -Verb RunAs"
+    powershell -NoProfile -Command "Start-Process 'cmd.exe' -ArgumentList '/c \"\"%~f0\" admin\"' -Verb RunAs"
     exit
 )
 
@@ -209,7 +209,7 @@ goto menu
 :: INSTALL =============================
 :service_install
 cls
-chcp 65001 > nul
+chcp 437 > nul
 
 :: Main
 cd /d "%~dp0"
@@ -219,7 +219,7 @@ set "LISTS_PATH=%~dp0lists\"
 :: Searching for .bat files in current folder, except files that start with "service"
 echo Pick one of the options:
 set "count=0"
-for /f "delims=" %%F in ('powershell -Command "Get-ChildItem -Filter '*.bat' | Where-Object { $_.Name -notlike 'service*' } | Sort-Object { [Regex]::Replace($_.Name, '\d+', { $args[0].Value.PadLeft(8, '0') }) } | ForEach-Object { $_.Name }"') do (
+for /f "delims=" %%F in ('powershell -NoProfile -Command "Get-ChildItem -LiteralPath '.' -Filter '*.bat' | Where-Object { $_.Name -notlike 'service*' } | Sort-Object { [Regex]::Replace($_.Name, '(\d+)', { $args[0].Value.PadLeft(8, '0') }) } | ForEach-Object { $_.Name }"') do (
     set /a count+=1
     echo !count!. %%F
     set "file!count!=%%F"
@@ -478,7 +478,7 @@ echo:
 
 :: DNS
 set "dohfound=0"
-for /f "delims=" %%a in ('powershell -Command "Get-ChildItem -Recurse -Path 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' | Get-ItemProperty | Where-Object { $_.DohFlags -gt 0 } | Measure-Object | Select-Object -ExpandProperty Count"') do (
+for /f "delims=" %%a in ('powershell -NoProfile -Command "Get-ChildItem -Recurse -Path 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' | Get-ItemProperty | Where-Object { $_.DohFlags -gt 0 } | Measure-Object | Select-Object -ExpandProperty Count"') do (
     if %%a gtr 0 (
         set "dohfound=1"
     )
@@ -666,36 +666,6 @@ pause
 goto menu
 
 
-:: CHECK UPDATES SWITCH =================
-:check_updates_switch_status
-chcp 437 > nul
-
-set "checkUpdatesFlag=%~dp0utils\check_updates.enabled"
-
-if exist "%checkUpdatesFlag%" (
-    set "CheckUpdatesStatus=enabled"
-) else (
-    set "CheckUpdatesStatus=disabled"
-)
-exit /b
-
-
-:check_updates_switch
-chcp 437 > nul
-cls
-
-if not exist "%checkUpdatesFlag%" (
-    echo Enabling check updates...
-    echo ENABLED > "%checkUpdatesFlag%"
-) else (
-    echo Disabling check updates...
-    del /f /q "%checkUpdatesFlag%"
-)
-
-pause
-goto menu
-
-
 :: IPSET SWITCH =======================
 :ipset_switch_status
 chcp 437 > nul
@@ -775,7 +745,7 @@ echo Updating ipset-all...
 if exist "%SystemRoot%\System32\curl.exe" (
     curl -L -o "%listFile%" "%url%"
 ) else (
-    powershell -Command ^
+    powershell -NoProfile -Command ^
         "$url = '%url%';" ^
         "$out = '%listFile%';" ^
         "$dir = Split-Path -Parent $out;" ^
@@ -805,7 +775,7 @@ echo Checking hosts file...
 if exist "%SystemRoot%\System32\curl.exe" (
     curl -L -s -o "%tempFile%" "%hostsUrl%"
 ) else (
-    powershell -Command ^
+    powershell -NoProfile -Command ^
         "$url = '%hostsUrl%';" ^
         "$out = '%tempFile%';" ^
         "$res = Invoke-WebRequest -Uri $url -TimeoutSec 10 -UseBasicParsing;" ^
@@ -859,7 +829,7 @@ goto menu
 
 :: RUN TESTS =============================
 :run_tests
-chcp 65001 >nul
+chcp 437 >nul
 cls
 
 :: Require PowerShell 3.0+
@@ -882,15 +852,15 @@ goto menu
 :: Utility functions
 
 :PrintGreen
-powershell -Command "Write-Host \"%~1\" -ForegroundColor Green"
+powershell -NoProfile -Command "Write-Host \"%~1\" -ForegroundColor Green"
 exit /b
 
 :PrintRed
-powershell -Command "Write-Host \"%~1\" -ForegroundColor Red"
+powershell -NoProfile -Command "Write-Host \"%~1\" -ForegroundColor Red"
 exit /b
 
 :PrintYellow
-powershell -Command "Write-Host \"%~1\" -ForegroundColor Yellow"
+powershell -NoProfile -Command "Write-Host \"%~1\" -ForegroundColor Yellow"
 exit /b
 
 :check_command
